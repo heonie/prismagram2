@@ -1,0 +1,1 @@
+export const CHANNEL_NEW_MESSAGE = "NEW_MESSAGE";

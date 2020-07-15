@@ -11,6 +11,7 @@
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
     "@babel/runtime": "^7.4.5",
+    "@prisma/client": "2.2.2",
     "aws-sdk": "^2.483.0",
     "copy": "^0.3.2",
     "dotenv": "^6.2.0",
@@ -24,18 +25,16 @@
     "nodemailer": "^5.1.1",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "passport": "^0.4.0",
-    "passport-jwt": "^4.0.0",
-    "prisma": "^1.33.0",
-    "prisma-client-lib": "^1.26.4"
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.10.5",
+    "@prisma/cli": "2.2.2",
     "nodemon": "^1.18.10"
   },
   "scripts": {
-    "deploy": "prisma deploy",
-    "generate": "prisma generate",
-    "prisma": "yarn run deploy && yarn run generate",
+    "deploy": "npx prisma deploy",
+    "generate": "npx prisma generate",
     "dev": "nodemon --exec babel-node src/server.js",
     "prebuild": "yarn run generate",
     "build": "babel src -d build",

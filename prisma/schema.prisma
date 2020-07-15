@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  avatar                           String?
+  bio                              String    @default("")
+  createdAt                        DateTime  @default(now())
+  email                            String    @unique
+  firstName                        String    @default("")
+  id                               String    @id @default(cuid())
+  lastName                         String    @default("")
+  loginSecret                      String    @default("")
+  role                             String    @default("USER")
+  updatedAt                        DateTime  @updatedAt @default(now())
+  username                         String    @unique
+  posts                            Post[]    @relation("PostAuthor")
+  Like                             Like[]
+  comments                         Comment[]
+  inbox                            Message[] @relation("MessageReceiver")
+  outbox                           Message[] @relation("MessageSender")
+  followers                        User[]    @relation("UserFollows", references: [id])
+  following                        User[]    @relation("UserFollows", references: [id])
+  rooms                            Room[]    @relation(name:"RoomParticipants")
+}
+
+model Post {
+  caption   String    @default("")
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  location  String?
+  updatedAt DateTime  @updatedAt @default(now())
+  userId    String
+  user      User      @relation(name: "PostAuthor", fields: [userId], references: [id])
+  likes     Like[]
+  comments  Comment[]
+  files     File[]
+}
+
+model Like {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  postId    String
+  updatedAt DateTime @updatedAt @default(now())
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Comment {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  postId    String
+  text      String
+  updatedAt DateTime @updatedAt @default(now())
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model File {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  postId    String
+  updatedAt DateTime @updatedAt @default(now())
+  url       String
+  post      Post     @relation(fields: [postId], references: [id])
+}
+
+model Room {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  updatedAt DateTime  @updatedAt @default(now())
+  messages  Message[]
+  participants  User[]    @relation(name:"RoomParticipants", references: [id])
+}
+
+model Message {
+  createdAt                     DateTime @default(now())
+  fromUserId                    String
+  id                            String   @id @default(cuid())
+  roomId                        String
+  text                          String
+  toUserId                      String
+  updatedAt                     DateTime @updatedAt
+  from                          User     @relation("MessageSender", fields: [fromUserId], references: [id])
+  room                          Room     @relation(fields: [roomId], references: [id])
+  to                            User     @relation("MessageReceiver", fields: [toUserId], references: [id])
+}
