@@ -2,7 +2,7 @@ import { isAuthenticated } from "../../../middlewares";
 
 export default {
   Mutation: {
-    addComment: async (_, args, { request }) => {
+    addComment: async (_, args, { request, prisma }) => {
       isAuthenticated(request);
       const {text, postId} = args;
       const {user} = request;
