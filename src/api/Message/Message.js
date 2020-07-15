@@ -1,9 +1,7 @@
-import { prisma } from "../../../generated/prisma-client";
-
 export default {
   Message: {
-    from: ({ id }) => prisma.message({ id }).from(),
-    to: ({ id }) => prisma.message({ id }).to(),
-    room: ({ id }) => prisma.message({ id }).room()
+    from: ({id}, _, {prisma}) => prisma.message.findOne({where: {id}}).from(),
+    to: ({id}, _, {prisma}) => prisma.message.findOne({where: {id}}).to(),
+    room: ({id}, _, {prisma}) => prisma.message.findOne({where: {id}}).room()
   }
 };

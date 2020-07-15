@@ -1,27 +1,14 @@
-import { prisma } from "../../../../generated/prisma-client";
+import {CHANNEL_NEW_MESSAGE} from "../../../Constants";
+import { withFilter } from 'graphql-subscriptions';
 
 export default {
   Subscription: {
     newMessage: {
-      subscribe: (_, args) => {
-        const { roomId } = args;
-        return prisma.$subscribe
-          .message({
-            AND: [
-              { mutation_in: "CREATED" },
-              {
-                node: {
-                  room: { id: roomId }
-                }
-              }
-            ]
-          })
-          .node();
-      },
-      resolve: (payload, args, context) => {
-        console.log(args, context);
-        return payload;
-      }
+      subscribe: withFilter(
+          (_, args, {pubsub}) => pubsub.asyncIterator(CHANNEL_NEW_MESSAGE),
+          (payload, {roomId}) => payload.roomId === roomId
+      ),
+      resolve: (payload) => payload.newMessage
     }
   }
-};
+}

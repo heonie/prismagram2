@@ -1,17 +1,17 @@
-import { prisma } from "../../../../generated/prisma-client";
-
 export default {
   Query: {
-    seeRooms: (_, __, { request, isAuthenticated }) => {
+    seeRooms: (_, __, {request, isAuthenticated, prisma}) => {
       isAuthenticated(request);
-      const { user } = request;
-      return prisma.rooms({
+      const {user} = request;
+      return prisma.room.findAll({
         where: {
-          participants_some: {
-            id: user.id
+          participants: {
+            some: {
+              id: user.id
+            }
           }
         }
       });
     }
   }
-};
+}

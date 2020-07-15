@@ -1,11 +1,11 @@
-import { prisma } from "../../../../generated/prisma-client";
-
 export default {
   Query: {
-    me: async (_, __, { request, isAuthenticated }) => {
+    me: (_, args, {request, prisma, isAuthenticated}) => {
       isAuthenticated(request);
-      const { user } = request;
-      return await prisma.user({ id: user.id });
+      //console.dir(request.user);
+      return prisma.user.findOne({
+        where: {id: request.user.id}
+      });
     }
   }
-};
+}

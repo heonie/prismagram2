@@ -1,28 +1,29 @@
-import { prisma } from "../../../../generated/prisma-client";
-
 export default {
   Mutation: {
-    createAccount: async (_, args) => {
-      const { username, email, firstName = "", lastName = "", bio = "" } = args;
-      const exists = await prisma.$exists.user({
-        OR: [
-          {
-            username
-          },
-          { email }
-        ]
+    createAccount: async (_, args, {prisma}) => {
+      const {
+        username, email,
+        firstName = "", lastName = "", bio = ""
+      } = args;
+
+      const exist = await prisma.user.findMany({
+        where: {
+          OR: [{username}, {email}]
+        }
       });
-      if (exists) {
-        throw Error("This username / email is already taken");
+      if(exist && exist.length > 0) {
+        if(exist.filter(user => user.email == email).length > 0) {
+          throw Error("This email already taken");
+        }
+        else if(exist.filter(user => user.username == username).length > 0) {
+          throw Error("This username already taken");
+        }
       }
-      await prisma.createUser({
-        username,
-        email,
-        firstName,
-        lastName,
-        bio
+
+      await prisma.user.create({
+        data: {username, email, firstName, lastName, bio}
       });
       return true;
     }
   }
-};
+}

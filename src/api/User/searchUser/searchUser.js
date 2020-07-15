@@ -1,16 +1,15 @@
-import { prisma } from "../../../../generated/prisma-client";
-
 export default {
   Query: {
-    searchUser: async (_, args) =>
-      prisma.users({
+    searchUser: async(_, args, {prisma}) => {
+      return prisma.user.findMany({
         where: {
           OR: [
-            { username_contains: args.term },
-            { firstName_contains: args.term },
-            { lastName_contains: args.term }
+            {username: {contains: args.term}},
+            {firstName: {contains: args.term}},
+            {lastName: {contains: args.term}}
           ]
         }
-      })
+      });
+    }
   }
-};
+}
