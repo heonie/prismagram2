@@ -2,8 +2,7 @@
   "name": "prismagram",
   "version": "1.0.0",
   "description": "Instragram clone with Express + Prisma + React and React Native",
-  "repository": "https://github.com/nomadcoders/prismagram",
-  "author": "Nicolás Serrano Arévalo <itnico.las.me@gmail.com>",
+  "repository": "https://github.com/nomadcoders/prismagram2",
   "license": "MIT",
   "dependencies": {
     "@babel/cli": "^7.4.4",
@@ -38,7 +37,7 @@
     "dev": "nodemon --exec babel-node src/server.js",
     "prebuild": "yarn run generate",
     "build": "babel src -d build",
-    "postbuild": "cd src && copy ./api/**/*.graphql ../build/api/",
+    "postbuild": "copy ./src/api/**/*.graphql ./build/api/",
     "start": "node build/server.js"
   }
 }
